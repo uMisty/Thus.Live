@@ -1,0 +1,14 @@
+{
+  "name": "我的博客",
+  "author": "作者名",
+  "title": "我的博客 · 记录与分享",
+  "description": "记录学习与生活中的想法。",
+  "language": "zh-CN",
+  "url": "",
+  "avatar": "",
+  "avatarText": "记",
+  "role": "记录与分享",
+  "introduction": ["写下你希望读者了解的简短介绍。"],
+  "footer": "保持好奇，持续记录",
+  "pageSize": 10
+}

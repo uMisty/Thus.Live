@@ -1,0 +1,144 @@
+/* Shared motion tokens. Effects are brief, finite, and leave layout untouched. */
+:root {
+  --motion-fast: 180ms;
+  --motion-page: 300ms;
+  --motion-reveal: 460ms;
+  --motion-stagger: 45ms;
+  --motion-distance: 12px;
+  --motion-ease: cubic-bezier(.22, 1, .36, 1);
+}
+
+html, body {
+  transition: background-color var(--motion-page), color var(--motion-page);
+}
+.muted, .post-meta, .post-description, .intro-prose, .article-lead,
+.identity p, .archive-date, .site-footer > span, .search-status,
+.search-result time, .search-meta, .search-result p {
+  transition: color var(--motion-page);
+}
+.site-footer, .post-entry, .article-footer, .mobile-toc,
+.tag-index li a, .search-input-row, .search-result {
+  transition: border-color var(--motion-page);
+}
+.avatar, .tag-popover, .markdown-body pre, .markdown-body .custom-block {
+  transition: background-color var(--motion-page), border-color var(--motion-page);
+}
+.archive-entry::before, .archive-entry::after {
+  transition: background-color var(--motion-page), box-shadow var(--motion-page);
+}
+
+/* The header stays in place as route content softly arrives. No exit delay. */
+.site-main { animation: page-enter var(--motion-page) var(--motion-ease); }
+.site-main:has(:target) { animation: none; }
+.is-revealing {
+  animation: content-reveal var(--motion-reveal) var(--motion-ease) backwards;
+  animation-delay: calc(var(--reveal-order, 0) * var(--motion-stagger));
+}
+
+.site-nav > a, .tag-menu > summary { position: relative; }
+.site-nav > a::after, .tag-menu > summary::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 3px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--motion-page) var(--motion-ease);
+}
+.site-nav > a[aria-current]::after,
+.tag-menu > summary.selected::after,
+.tag-menu[open] > summary::after,
+.site-nav > a:focus-visible::after,
+.tag-menu > summary:focus-visible::after { transform: scaleX(1); }
+
+.icon-button {
+  transition: color var(--motion-fast), background-color var(--motion-fast),
+    transform var(--motion-fast) var(--motion-ease);
+}
+.icon-button:active { transform: scale(.92); }
+.theme-toggle > .icon {
+  grid-area: 1 / 1;
+  transition: opacity var(--motion-fast), transform var(--motion-page) var(--motion-ease);
+}
+.theme-toggle > .moon-icon { opacity: 1; transform: rotate(0) scale(1); }
+.theme-toggle > .sun-icon { opacity: 0; transform: rotate(-70deg) scale(.65); }
+.dark .theme-toggle > .moon-icon { opacity: 0; transform: rotate(70deg) scale(.65); }
+.dark .theme-toggle > .sun-icon { opacity: 1; transform: rotate(0) scale(1); }
+.read-link span, .text-button > span {
+  display: inline-block;
+  transition: transform var(--motion-page) var(--motion-ease);
+}
+.read-link::after { transition: transform var(--motion-page) var(--motion-ease), inset-inline-end var(--motion-page) var(--motion-ease); }
+.read-link span { transform: translateX(var(--read-link-shift)); }
+.read-link:focus-visible { --read-link-shift: 5px; }
+.home-intro > .avatar {
+  transition: transform var(--motion-reveal) var(--motion-ease), background-color var(--motion-page);
+}
+.tag-popover { animation: popover-enter 220ms var(--motion-ease); transform-origin: top center; }
+.tag-popover a { transition: color var(--motion-fast), transform var(--motion-page) var(--motion-ease); }
+.desktop-toc a { transition: color var(--motion-fast), text-decoration-color var(--motion-fast); }
+.desktop-toc a[aria-current] { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
+.mobile-toc[open] nav { animation: content-reveal var(--motion-page) var(--motion-ease); }
+
+/* Native dialog preserves its focus trap and Escape behavior throughout. */
+.search-dialog[open] { animation: dialog-enter 220ms var(--motion-ease); }
+.search-dialog[open]::backdrop { animation: backdrop-enter 220ms ease-out; }
+@supports (transition-behavior: allow-discrete) and (overlay: auto) {
+  .search-dialog {
+    opacity: 0;
+    transform: translateY(-8px) scale(.985);
+    transition: opacity var(--motion-fast), transform 240ms var(--motion-ease),
+      display 240ms allow-discrete, overlay 240ms allow-discrete;
+  }
+  .search-dialog[open] { opacity: 1; transform: none; animation: none; }
+  .search-dialog::backdrop {
+    background: transparent;
+    transition: background-color 240ms, display 240ms allow-discrete, overlay 240ms allow-discrete;
+  }
+  .search-dialog[open]::backdrop { background: var(--overlay); animation: none; }
+  @starting-style {
+    .search-dialog[open] { opacity: 0; transform: translateY(-8px) scale(.985); }
+    .search-dialog[open]::backdrop { background: transparent; }
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .site-nav > a:hover::after, .tag-menu > summary:hover::after { transform: scaleX(1); }
+  .icon-button:hover { transform: translateY(-2px); }
+  .icon-button:active { transform: scale(.92); }
+  .home-intro > .avatar:hover { transform: translateY(-3px) rotate(-5deg); }
+  .read-link:hover { --read-link-shift: 5px; }
+  .text-button:hover > span { transform: translateY(3px); }
+  .tag-popover a:hover { color: var(--accent); transform: translateX(3px); }
+}
+
+@keyframes page-enter { from { opacity: .3; } to { opacity: 1; } }
+@keyframes content-reveal {
+  from { opacity: 0; transform: translateY(var(--motion-distance)); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes popover-enter {
+  from { opacity: 0; transform: translateY(-5px) scale(.985); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes dialog-enter {
+  from { opacity: 0; transform: translateY(-8px) scale(.985); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes backdrop-enter { from { background: transparent; } to { background: var(--overlay); } }
+
+@media (max-width: 560px) {
+  :root { --motion-distance: 8px; --motion-reveal: 380ms; --motion-stagger: 35ms; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .read-link:hover, .read-link:focus-visible { --read-link-shift: 0px; }
+  *, *::before, *::after, ::backdrop {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .icon-button:hover, .icon-button:active, .home-intro > .avatar:hover,
+  .read-link:hover span, .read-link:focus-visible span,
+  .text-button:hover > span, .tag-popover a:hover { transform: none; }
+}

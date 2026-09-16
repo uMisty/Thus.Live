@@ -1,0 +1,42 @@
+{
+  "name": "thus-live",
+  "description": "A minimal Vue and Markdown static blog template.",
+  "license": "0BSD",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "dev": "vitepress dev --host 127.0.0.1 --port 5173",
+    "build": "node scripts/validate-content.mjs && vitepress build",
+    "preview": "vitepress preview --host 127.0.0.1 --port 4173",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "node --test tests/*.test.mjs",
+    "capture:preview": "node scripts/capture-preview.mjs",
+    "test:e2e": "playwright test",
+    "check:output": "node scripts/check-output.mjs",
+    "new:post": "node scripts/new-post.mjs"
+  },
+  "dependencies": {
+    "vue": "^3.5.42",
+    "mermaid": "^11.12.0"
+  },
+  "devDependencies": {
+    "vitepress": "1.6.4",
+    "typescript": "~5.9.3",
+    "vue-tsc": "^3.1.0",
+    "@types/node": "^22.0.0",
+    "@types/markdown-it": "^14.1.2",
+    "@playwright/test": "^1.55.0",
+    "gray-matter": "^4.0.3",
+    "markdown-it": "^14.1.0",
+    "markdown-it-footnote": "^4.0.0",
+    "markdown-it-task-lists": "^2.1.1",
+    "markdown-it-deflist": "^3.0.0",
+    "markdown-it-abbr": "^2.0.0",
+    "markdown-it-mark": "^4.0.0",
+    "markdown-it-sub": "^2.0.0",
+    "markdown-it-sup": "^2.0.0",
+    "markdown-it-mathjax3": "^4.3.2"
+  }
+}

@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.vitepress/cache/
+.vitepress/.temp/
+.vercel/
+test-results/
+playwright-report/
+.env
+.env.*
+!.env.example
+*.zip
+design/implementation/
+.DS_Store
+Thumbs.db
+*.log

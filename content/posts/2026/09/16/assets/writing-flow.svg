@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 180" role="img" aria-labelledby="title desc">
+  <title id="title">Markdown to static pages</title>
+  <desc id="desc">Write Markdown, build HTML, and publish your website.</desc>
+  <rect width="760" height="180" rx="8" fill="#f6f7f6"/>
+  <g fill="#fff" stroke="#d6dfdb"><rect x="28" y="48" width="194" height="84" rx="6"/><rect x="283" y="48" width="194" height="84" rx="6"/><rect x="538" y="48" width="194" height="84" rx="6"/></g>
+  <g fill="none" stroke="#2f6f61" stroke-width="2"><path d="M235 90h33m-8-6 8 6-8 6"/><path d="M490 90h33m-8-6 8 6-8 6"/></g>
+  <g fill="#242628" font-family="system-ui,sans-serif" font-size="20" text-anchor="middle"><text x="125" y="96">Markdown</text><text x="380" y="96">Static HTML</text><text x="635" y="96">Your website</text></g>
+</svg>

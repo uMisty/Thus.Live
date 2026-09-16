@@ -1,0 +1,69 @@
+# 站点配置
+
+[返回 README](../README.md)
+
+`site.config.ts` 定义公开模板的默认值，`site.profile.json` 保存派生博客的覆盖值。组件只读取合并后的配置，修改作者或名称无需改动页面代码。
+
+公开模板的 `site.profile.json` 为 `{}`。在自己的私有仓库中编辑并提交它；可以参考 [完整示例](../site.profile.example.json)，只填写需要覆盖的字段。不要把它加入 `.gitignore`，否则远程构建无法得到个人配置。
+
+## 字段
+
+| 字段 | 类型 | 默认值 / 用途 |
+| --- | --- | --- |
+| `name` | string | `Thus.Live`；导航、首页与页脚名称 |
+| `author` | string | `Thus.Live`；列表、正文、搜索结果的统一作者 |
+| `title` | string | `Thus.Live · 记录与分享`；首页浏览器标题 |
+| `description` | string | `记录当下，持续思考。`；站点简介与默认 SEO 描述 |
+| `language` | string | `zh-CN`；HTML 与 RSS 语言，不会自动翻译界面 |
+| `url` | string | 空；正式站点根地址，例如 `https://blog.example.com` |
+| `avatar` | string | 空；本地资源路径或图片 URL |
+| `avatarText` | string | 空；头像占位文字，空时取 `name` 首字符 |
+| `role` | string | `记录、思考与分享`；首页名称下的一行文字，空字符串隐藏 |
+| `introduction` | string[] | 首页介绍段落；`[]` 隐藏介绍 |
+| `footer` | string | `记录与分享`；页脚短句 |
+| `pageSize` | 正整数 | `10`；博文列表每页数量 |
+
+配置采用字段覆盖，数组整体替换。`name`、`author`、`title`、`language` 不可为空白，拼错字段名或填错类型会中止构建并报错。JSON 不支持注释和末尾逗号。
+
+当前是单作者博客，Markdown frontmatter 中的 `author` 不参与展示。修改 `author` 会同步更新所有文章列表、正文和搜索结果。
+
+## 头像
+
+把图片放在 `content/public/avatar.webp`，设置 `"avatar": "/avatar.webp"`。建议正方形图片，显示时裁为圆形。留空或图片加载失败时显示文字占位，不需要额外头像服务。
+
+站点默认部署在域名根路径。资源引用不包含 `content/public`，例如 `/avatar.webp`。
+
+## 域名与元数据
+
+构建时按以下优先级决定正式地址：
+
+1. 进程环境变量 `SITE_URL`。
+2. `site.profile.json` 的 `url`。
+3. Vercel 提供的 `VERCEL_PROJECT_PRODUCTION_URL`。
+
+只接受 HTTP(S) 的根地址，不接受用户名、密码、查询参数、锚点或子目录。末尾 `/` 可以省略。没有配置时仍然正常生成网页与 `robots.txt`，但不生成 canonical、RSS 与 sitemap。
+
+`SITE_URL` 是构建参数，构建后再修改 Nginx 或容器的运行时环境变量不会改变生成的 HTML。项目没有配置自动读取本地 `.env`；请使用 shell 环境变量、托管平台环境设置，或 `site.profile.json`。参见 [部署说明](DEPLOYMENT.md)。
+
+网页会展示或包含这些配置，不要放 Token、密码或不想公开的个人信息。源代码仓库设为私有并不改变已部署静态网页的可见性。
+
+## 主题与交互
+
+- `src/styles/theme.css`：明暗主题的语义颜色变量、页面布局和组件样式。
+- `src/styles/markdown.css`：正文排版、代码、表格与公式。
+- `src/styles/motion.css`：路由过渡、入场、悬停和搜索动画。
+- `.vitepress/config.ts`：Shiki 明暗代码主题、Markdown 扩展、SEO 和输出配置。
+
+优先调整语义颜色变量，让导航、正文、边框和标签一起保持一致。代码高亮的亮色 / 暗色方案需要成对配置。系统选择减少动态效果时，界面停用相关动画。
+
+## 私有博客的维护边界
+
+| 文件 | 通常由谁维护 |
+| --- | --- |
+| `src/`、`.vitepress/`、`scripts/`、依赖 | 跟随公共模板，按需覆盖 |
+| `site.config.ts` | 公共模板默认值与校验 |
+| `site.profile.json` | 私有博客自己的配置 |
+| `content/posts/`、`content/public/` | 私有博客自己的文章和资源 |
+| `tests/e2e/` | 以两篇写作指南为数据的回归测试；替换文章后相应调整 |
+
+公开模板应尽量保持 `site.profile.json` 为空，减少上游更新与个人配置的冲突。文章也在同一仓库内，因此上游改动写作指南时仍可能产生冲突；合并时需要检查。详见 [GitHub 私有源码仓库与上游更新](PRIVATE-BLOG.md)。
