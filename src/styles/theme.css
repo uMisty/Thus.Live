@@ -61,6 +61,7 @@ h1, h2, h3, h4 { font-weight: 500; letter-spacing: -.025em; }
 .header-actions { display: flex; align-items: center; gap: 8px; }
 .icon-button { display: grid; place-items: center; min-width: 44px; min-height: 44px; color: var(--muted); border-radius: 50%; }
 .icon-button:hover { color: var(--accent); background: var(--hover); }
+.header-actions [aria-current] { color: var(--accent); }
 .icon { display: inline-block; width: 40px; height: 40px; background-color: currentColor; mask-repeat: no-repeat; mask-size: contain; mask-position: center; flex: 0 0 auto; }
 .tag-menu .icon { width: 14px; height: 14px; transition: transform var(--duration); }
 .tag-menu { position: relative; }
@@ -75,14 +76,16 @@ h1, h2, h3, h4 { font-weight: 500; letter-spacing: -.025em; }
 .site-main { flex: 1; width: min(960px, 100%); margin: 64px auto 88px; }
 .site-main.layout-article { width: min(1040px, 100%); }
 .layout-home { padding-top: 32px; margin-bottom: 144px; }
-.home-intro { max-width: 720px; display: flex; flex-direction: column; align-items: flex-start; gap: 28px; }
+.home-content.markdown-body { max-width: 720px; margin-top: 0; }
+.home-content.markdown-body h1 { font-size: 48px; line-height: 1.34; margin-block: 28px 8px; }
+.home-content.markdown-body > div > p { margin-block: 28px; line-height: 32px; max-width: 680px; }
+.home-content.markdown-body h1 + p { color: var(--accent); margin-top: 8px; }
+.home-content.markdown-body > div > :first-child { margin-top: 0; }
+.home-content.markdown-body > div > :last-child { margin-bottom: 0; }
+.home-content .avatar img { width: 100%; height: 100%; margin: 0; border-radius: 0; }
 .avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--avatar-bg); display: inline-grid; place-items: center; flex: 0 0 auto; overflow: hidden; font-weight: 500; font-size: 32px; line-height: 1; }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
 .avatar.small { width: 28px; height: 28px; font-size: 14px; }
-.identity h1 { font-size: 48px; line-height: 1.34; font-weight: 500; }
-.identity p { color: var(--accent); margin-top: 8px; font-size: 18px; }
-.intro-line, .intro-prose { font-size: 18px; line-height: 32px; max-width: 680px; }
-.intro-prose { color: var(--muted); }
 .read-link { --read-link-shift: 0px; position: relative; display: inline-flex; gap: 12px; color: var(--accent); font-size: 18px; }
 .read-link::after { content: ''; position: absolute; inset-inline-start: 0; inset-inline-end: calc(-1 * var(--read-link-shift)); bottom: 0; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; pointer-events: none; }
 .read-link:hover::after, .read-link:focus-visible::after { transform: scaleX(1); }
@@ -103,6 +106,7 @@ h1, h2, h3, h4 { font-weight: 500; letter-spacing: -.025em; }
 .filter-context { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; margin-bottom: 40px; font-size: 14px; color: var(--muted); }
 .filter-context h1 { font-size: 20px; color: var(--accent); }
 .filter-context h1 span { color: var(--muted); font-size: 13px; margin-left: 12px; }
+.filter-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px 20px; }
 .section-heading { font-size: 32px; margin-bottom: 12px; }
 .tag-index ul { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); column-gap: 64px; margin: 40px 0; padding: 0; list-style: none; }
 .tag-index li a { display: flex; gap: 20px; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); padding: 16px 0; color: var(--accent); }
@@ -202,9 +206,9 @@ h1, h2, h3, h4 { font-weight: 500; letter-spacing: -.025em; }
   .site-nav { grid-column: 1 / -1; grid-row: 2; gap: 30px; font-size: 15px; }
   .site-main { margin-top: 36px; }
   .layout-home { padding-top: 16px; margin-bottom: 100px; }
-  .home-intro { gap: 24px; }
-  .identity h1 { font-size: 40px; }
-  .identity p, .intro-line, .intro-prose { font-size: 16px; line-height: 29px; }
+  .home-content.markdown-body h1 { font-size: 40px; }
+  .home-content.markdown-body > div > p { margin-block: 24px; line-height: 29px; }
+  .home-content.markdown-body h1 + p { margin-top: 8px; }
   .avatar { width: 56px; height: 56px; font-size: 28px; }
   .tag-popover { left: -60px; right: auto; width: min(280px, calc(100vw - 40px)); top: calc(100% + 4px); }
   .post-entry { margin-bottom: 28px; padding-bottom: 24px; }

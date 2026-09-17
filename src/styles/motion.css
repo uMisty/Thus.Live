@@ -11,8 +11,8 @@
 html, body {
   transition: background-color var(--motion-page), color var(--motion-page);
 }
-.muted, .post-meta, .post-description, .intro-prose, .article-lead,
-.identity p, .archive-date, .site-footer > span, .search-status,
+.muted, .post-meta, .post-description, .home-content p, .article-lead,
+.archive-date, .site-footer > span, .search-status,
 .search-result time, .search-meta, .search-result p {
   transition: color var(--motion-page);
 }
@@ -72,7 +72,7 @@ html, body {
 .read-link::after { transition: transform var(--motion-page) var(--motion-ease), inset-inline-end var(--motion-page) var(--motion-ease); }
 .read-link span { transform: translateX(var(--read-link-shift)); }
 .read-link:focus-visible { --read-link-shift: 5px; }
-.home-intro > .avatar {
+.home-content .avatar {
   transition: transform var(--motion-reveal) var(--motion-ease), background-color var(--motion-page);
 }
 .tag-popover { animation: popover-enter 220ms var(--motion-ease); transform-origin: top center; }
@@ -107,7 +107,7 @@ html, body {
   .site-nav > a:hover::after, .tag-menu > summary:hover::after { transform: scaleX(1); }
   .icon-button:hover { transform: translateY(-2px); }
   .icon-button:active { transform: scale(.92); }
-  .home-intro > .avatar:hover { transform: translateY(-3px) rotate(-5deg); }
+  .home-content .avatar:hover { transform: translateY(-3px) rotate(-5deg); }
   .read-link:hover { --read-link-shift: 5px; }
   .text-button:hover > span { transform: translateY(3px); }
   .tag-popover a:hover { color: var(--accent); transform: translateX(3px); }
@@ -138,7 +138,7 @@ html, body {
     transition: none !important;
     scroll-behavior: auto !important;
   }
-  .icon-button:hover, .icon-button:active, .home-intro > .avatar:hover,
+  .icon-button:hover, .icon-button:active, .home-content .avatar:hover,
   .read-link:hover span, .read-link:focus-visible span,
   .text-button:hover > span, .tag-popover a:hover { transform: none; }
 }

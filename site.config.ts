@@ -10,8 +10,6 @@ export interface SiteConfig {
   url: string
   avatar: string
   avatarText: string
-  role: string
-  introduction: string[]
   footer: string
   pageSize: number
 }
@@ -25,11 +23,6 @@ const defaults: SiteConfig = {
   url: '',
   avatar: '',
   avatarText: '',
-  role: '记录、思考与分享',
-  introduction: [
-    '这里收集技术笔记、阅读记录和日常想法。',
-    '把值得留下的想法，慢慢写成文字。',
-  ],
   footer: '记录与分享',
   pageSize: 10,
 }
@@ -38,9 +31,7 @@ const defaults: SiteConfig = {
 if (!profile || typeof profile !== 'object' || Array.isArray(profile)) throw new Error('site.profile.json: 配置必须是 JSON 对象')
 for (const [key, value] of Object.entries(profile)) {
   if (!Object.hasOwn(defaults, key)) throw new Error(`site.profile.json: 未知配置 ${key}`)
-  if (key === 'introduction') {
-    if (!Array.isArray(value) || value.some(item => typeof item !== 'string')) throw new Error('site.profile.json: introduction 必须是字符串数组')
-  } else if (key === 'pageSize') {
+  if (key === 'pageSize') {
     if (typeof value !== 'number' || !Number.isInteger(value) || value < 1) throw new Error('site.profile.json: pageSize 必须是正整数')
   } else if (typeof value !== 'string') throw new Error(`site.profile.json: ${key} 必须是字符串`)
 }

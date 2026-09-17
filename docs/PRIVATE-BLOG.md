@@ -34,7 +34,7 @@ git push -u origin main
 
 ### 添加自己的内容
 
-1. 编辑 `site.profile.json`：名称、作者、头像、简介和域名。
+1. 编辑 `site.profile.json`：名称、作者、头像、SEO 描述和域名；编辑 `content/index.md` 自定义首页内容。
 2. 在 `content/posts/` 中添加自己的文章；两篇写作指南可保留或替换，并相应调整文内链接。
 3. 在 `content/public/` 或文章相邻目录放入准备公开的图片。
 4. 运行 `npm ci`、`npm run typecheck`、`npm test`、`npm run build`、`npm run check:output`。

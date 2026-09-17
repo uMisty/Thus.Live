@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { withBase } from 'vitepress'
-defineProps<{ name: 'search' | 'moon' | 'sun' | 'chevron' | 'copy' }>()
+defineProps<{ name: 'search' | 'moon' | 'sun' | 'chevron' | 'copy' | 'rss' }>()
 </script>
 
 <template>

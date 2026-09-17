@@ -6,7 +6,7 @@ test('home, date archive, multi-tag navigation and theme persistence', async ({ 
   page.on('pageerror', error => errors.push(error.message))
   await page.goto('/')
   await expect(page).toHaveTitle(siteConfig.title)
-  await expect(page.getByRole('heading', { name: siteConfig.name, exact: true })).toBeVisible()
+  await expect(page.locator('.home-content').getByRole('heading', { name: /Thus\.Live/, level: 1 })).toBeVisible()
   await page.getByRole('link', { name: '浏览博文' }).click()
   await expect(page.locator('.post-entry')).toHaveCount(2)
   await expect(page.locator('.post-entry .post-author').first()).toHaveText(siteConfig.author)
@@ -101,6 +101,9 @@ test('syntax highlighting has distinct colors in both themes and survives switch
 test('HTML is prerendered and removed demo articles return 404', async ({ browser, request }) => {
   const context = await browser.newContext({ javaScriptEnabled: false })
   const page = await context.newPage()
+  await page.goto('/')
+  await expect(page.locator('.home-content')).toContainText('这里收集技术笔记、阅读记录和日常想法。')
+  await expect(page.locator('.home-content').getByRole('link', { name: '浏览博文' })).toHaveAttribute('href', '/blog')
   await page.goto('/posts/2026/09/16/markdown-guide')
   await expect(page.getByRole('heading', { name: 'Markdown 写作与代码展示', exact: true })).toBeVisible()
   await expect(page.locator('.markdown-body')).toContainText('AddScoped')

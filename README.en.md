@@ -10,12 +10,13 @@ Thus.Live is a brand name, with `thus-live` as the package name. It does not imp
 
 ## Features
 
-- Minimal home page, post lists, multiple tags, date archives, and full-text search.
+- Markdown-customizable home page, post lists, multiple tags, date archives, and full-text search.
 - Consistent date, author, and reading time in lists and articles.
 - Responsive light / dark themes, subtle motion, and reduced-motion support.
 - Shiki syntax highlighting, line numbers, copy buttons, diffs, focus, and code groups.
 - Tables, task lists, footnotes, definitions, math, Mermaid, Emoji, and Vue components.
 - Prerendered HTML, draft exclusion, and optional canonical URLs, RSS, and sitemap.
+- RSS subscription page with copyable addresses, per-tag feeds, and a header link.
 
 ## Quick start
 
@@ -37,7 +38,7 @@ The output is `dist/`; preview runs at `http://127.0.0.1:4173`. Restart preview 
 
 ## Personalize
 
-Edit `site.profile.json`. The public template keeps this file as `{}`; your private repository should commit its own values. Missing fields inherit defaults from `site.config.ts`.
+Edit `site.profile.json` for site settings and `content/index.md` for home page content. The public template keeps the profile as `{}`; your private repository should commit its own values. Missing settings inherit defaults from `site.config.ts`.
 
 ```json
 {
@@ -45,8 +46,6 @@ Edit `site.profile.json`. The public template keeps this file as `{}`; your priv
   "author": "Your name",
   "title": "My Notes · Writing and learning",
   "description": "Notes on things I learn.",
-  "role": "Writing and learning",
-  "introduction": ["A place for ideas worth keeping."],
   "footer": "Keep learning",
   "avatar": "",
   "avatarText": "N",
@@ -58,6 +57,12 @@ Edit `site.profile.json`. The public template keeps this file as `{}`; your priv
 See [site.profile.example.json](site.profile.example.json) and the [configuration reference](docs/CONFIGURATION.md). `author` is shared across all posts; it is not read from individual frontmatter. Put an optional avatar at `content/public/avatar.webp` and set `avatar` to `/avatar.webp`. Empty or failed images show a text placeholder.
 
 The UI is currently Chinese. `language` sets document/feed metadata; it does not translate the interface. Site settings become public website content and must not contain secrets.
+
+## Customize the home page
+
+Write headings, paragraphs, images, lists, and links directly in `content/index.md`, keeping `layout: home` in its frontmatter. The page uses the same Markdown extensions as posts. The optional `<Avatar />` component reads the profile's avatar settings; remove it or replace it with a Markdown image as desired.
+
+Home page content no longer uses `role` or `introduction` from the profile. When upgrading, move those values into the Markdown body and remove the old fields. The profile's `name` still controls site branding. Its `title` and `description` provide default metadata, which the home page can override in frontmatter. Markdown edits update live during development.
 
 ## Write a post
 
@@ -85,6 +90,10 @@ The folder determines the publication date; an optional `date` field must match 
 Keep images beside posts and use relative Markdown links, or place public files in `content/public/`. Draft flags are not an asset privacy boundary. Markdown is trusted source code and can contain HTML and Vue.
 
 Explore the [Markdown example](content/posts/2026/09/16/markdown-guide.md). Native Emoji and shortcodes such as `:rocket:` work; a general-purpose icon library is not installed.
+
+## RSS subscriptions
+
+Open `/rss` from the header to copy a feed address into your RSS reader. Configure the production origin using profile `url` or build-time `SITE_URL` to enable `/feed.xml` and `/feeds/tags/<tag-slug>.xml`. Feeds include published post summaries, authors, dates, categories, and original links; drafts are excluded. Without an origin, the page shows an unavailable state. See the [RSS guide](docs/RSS.md).
 
 ## Deploy
 

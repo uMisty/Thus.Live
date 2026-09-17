@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitepress'
+import { defineConfigWithTheme } from 'vitepress'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import footnote from 'markdown-it-footnote'
@@ -9,7 +9,9 @@ import mark from 'markdown-it-mark'
 import sub from 'markdown-it-sub'
 import sup from 'markdown-it-sup'
 import { readPosts, parsePost, publicPost, archiveDates, collectTags } from '../scripts/content.mjs'
+import { escapeXml, feedPath, renderRss } from '../scripts/rss.mjs'
 import { siteConfig } from '../site.config'
+import type { BlogThemeConfig } from '../src/types'
 
 const allPosts = readPosts(undefined, true)
 const published = allPosts.filter(p => !p.draft)
@@ -19,12 +21,13 @@ if (configuredUrl) {
   if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password || parsed.search || parsed.hash || parsed.pathname !== '/') throw new Error('站点 URL 必须是 HTTP(S) 根域名地址，例如 https://blog.example.com')
 }
 const siteUrl = configuredUrl ? new URL(configuredUrl).origin : ''
-const escapeXml = (value: string) => value.replace(/[<>&"']/g, c => ({ '<':'&lt;', '>':'&gt;', '&':'&amp;', '"':'&quot;', "'":'&apos;' }[c]!))
+const feedUrl = siteUrl ? siteUrl + feedPath() : ''
 
-export default defineConfig({
+export default defineConfigWithTheme<BlogThemeConfig>({
   lang: siteConfig.language,
   title: siteConfig.name,
   description: siteConfig.description,
+  themeConfig: { feedUrl },
   srcDir: 'content',
   outDir: 'dist',
   cleanUrls: true,
@@ -35,8 +38,36 @@ export default defineConfig({
     ['meta', { name: 'theme-color', content: '#FFFFFF', media: '(prefers-color-scheme: light)' }],
     ['meta', { name: 'theme-color', content: '#17191A', media: '(prefers-color-scheme: dark)' }],
     ['meta', { name: 'color-scheme', content: 'light dark' }],
-    ...(siteUrl ? [['link', { rel: 'alternate', type: 'application/rss+xml', title: `${siteConfig.name} RSS`, href: `${siteUrl}/feed.xml` }]] as [string, Record<string, string>][] : []),
+    ...(feedUrl ? [['link', { rel: 'alternate', type: 'application/rss+xml', title: `${siteConfig.name} RSS`, href: feedUrl }]] as [string, Record<string, string>][] : []),
   ],
+  vite: {
+    plugins: [{
+      name: 'blog-rss',
+      configureServer(server) {
+        server.middlewares.use((request, response, next) => {
+          if (!['GET', 'HEAD'].includes(request.method || '')) return next()
+          let pathname: string
+          try { pathname = decodeURIComponent(new URL(request.url || '/', 'http://localhost').pathname) }
+          catch { return next() }
+          if (pathname !== feedPath() && !/^\/feeds\/tags\/[^/]+\.xml$/.test(pathname)) return next()
+          const notFound = () => {
+            response.statusCode = 404
+            response.setHeader('Content-Type', 'text/plain; charset=utf-8')
+            response.end(request.method === 'HEAD' ? undefined : 'RSS feed not found')
+          }
+          if (!siteUrl) return notFound()
+          try {
+            const posts = readPosts()
+            const tag = collectTags(posts).find(tag => decodeURIComponent(feedPath(tag.slug)) === pathname)
+            if (pathname !== feedPath() && !tag) return notFound()
+            response.setHeader('Content-Type', 'application/rss+xml; charset=utf-8')
+            response.setHeader('Cache-Control', 'no-cache')
+            response.end(request.method === 'HEAD' ? undefined : renderRss(posts, siteConfig, siteUrl, tag))
+          } catch (error) { next(error) }
+        })
+      },
+    }],
+  },
   markdown: {
     theme: { light: 'github-light', dark: 'github-dark' },
     lineNumbers: true,
@@ -61,10 +92,10 @@ export default defineConfig({
   },
   async transformPageData(page) {
     if (page.frontmatter.layout === 'home') {
-      page.title = siteConfig.title
-      page.titleTemplate = false
-      page.frontmatter.title = siteConfig.title
-      page.frontmatter.titleTemplate = false
+      page.title = page.frontmatter.title ?? siteConfig.title
+      page.titleTemplate = page.frontmatter.titleTemplate ?? false
+      page.frontmatter.title = page.title
+      page.frontmatter.titleTemplate = page.titleTemplate
     }
     const post = page.relativePath.startsWith('posts/') ? parsePost(page.relativePath, await fs.readFile(path.resolve('content', page.relativePath), 'utf8')) : undefined
     if (post) {
@@ -74,7 +105,13 @@ export default defineConfig({
       page.description = post.description
       page.frontmatter.title = post.title
     }
-    if (page.frontmatter.layout === 'tag') page.title = `#${page.params?.tagName ?? ''}`
+    if (page.frontmatter.layout === 'tag') {
+      page.title = `#${page.params?.tagName ?? ''}`
+      if (siteUrl && page.params?.tag) {
+        page.frontmatter.head ??= []
+        page.frontmatter.head.push(['link', { rel: 'alternate', type: 'application/rss+xml', title: `${siteConfig.name} · ${page.title} RSS`, href: siteUrl + feedPath(page.params.tag) }])
+      }
+    }
     if (page.frontmatter.layout === 'archive' && page.params?.date) page.title = `${page.params.date} · 时间轴`
     if (siteUrl && !page.isNotFound) {
       const relative = page.relativePath.replace(/\.md$/, '').replace(/(^|\/)index$/, '$1')
@@ -86,10 +123,13 @@ export default defineConfig({
   async buildEnd(config) {
     await fs.writeFile(path.join(config.outDir, 'robots.txt'), `User-agent: *\nAllow: /\n${siteUrl ? `Sitemap: ${siteUrl}/sitemap.xml\n` : ''}`)
     if (!siteUrl) return
-    const urls = ['/', '/blog', '/archive', '/tags', ...published.map(p => p.url), ...archiveDates(published).map(date => `/archive/${date}`), ...collectTags(published).map(tag => `/tags/${encodeURIComponent(tag.slug)}`)]
+    const urls = ['/', '/blog', '/archive', '/tags', '/rss', ...published.map(p => p.url), ...archiveDates(published).map(date => `/archive/${date}`), ...collectTags(published).map(tag => `/tags/${encodeURIComponent(tag.slug)}`)]
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(url => `<url><loc>${escapeXml(siteUrl + url)}</loc></url>`).join('')}</urlset>`
     await fs.writeFile(path.join(config.outDir, 'sitemap.xml'), sitemap)
-    const feed = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>${escapeXml(siteConfig.name)}</title><link>${escapeXml(siteUrl)}</link><description>${escapeXml(siteConfig.description)}</description><language>${escapeXml(siteConfig.language)}</language>${published.map(post => `<item><title>${escapeXml(post.title)}</title><link>${escapeXml(siteUrl + post.url)}</link><guid>${escapeXml(siteUrl + post.url)}</guid><pubDate>${new Date(post.date + 'T00:00:00Z').toUTCString()}</pubDate><description>${escapeXml(post.description)}</description>${post.tags.map(tag => `<category>${escapeXml(tag)}</category>`).join('')}</item>`).join('')}</channel></rss>`
-    await fs.writeFile(path.join(config.outDir, 'feed.xml'), feed)
+    await fs.writeFile(path.join(config.outDir, 'feed.xml'), renderRss(published, siteConfig, siteUrl))
+    await fs.mkdir(path.join(config.outDir, 'feeds/tags'), { recursive: true })
+    for (const tag of collectTags(published)) {
+      await fs.writeFile(path.join(config.outDir, 'feeds/tags', `${tag.slug}.xml`), renderRss(published, siteConfig, siteUrl, tag))
+    }
   },
 })

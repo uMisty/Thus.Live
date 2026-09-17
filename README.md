@@ -10,7 +10,7 @@ Thus.Live 是品牌写法，不是一句完整英文；代码包名为 `thus-liv
 
 ## 功能
 
-- 简洁首页、博文列表、多标签筛选、按年月日归档、全文搜索。
+- Markdown 自定义首页、博文列表、多标签筛选、按年月日归档、全文搜索。
 - 列表与正文统一显示 **日期 · 作者 · 阅读时间**；搜索结果也显示作者。
 - 时间轴圆点与日期对齐；桌面、平板与手机布局。
 - 亮色 / 暗色主题、轻量动效、键盘导航、减少动态效果支持。
@@ -18,6 +18,7 @@ Thus.Live 是品牌写法，不是一句完整英文；代码包名为 `thus-liv
 - 表格、任务列表、脚注、定义列表、公式、Mermaid、Emoji 和 Vue 组件。
 - 构建时生成独立 HTML；基础文章在禁用 JavaScript 时仍可阅读。
 - 配置正式域名后自动生成 RSS、sitemap、robots 和 canonical 链接。
+- RSS 订阅页、地址复制与按标签订阅，导航栏提供入口。
 
 仓库内仅保留 [Markdown 写作与代码展示](content/posts/2026/09/16/markdown-guide.md) 和 [博客编写与发布指南](content/posts/2026/09/17/blog-writing-guide.md)，可作为写作参考，也可以替换为自己的内容。
 
@@ -41,7 +42,7 @@ npm run preview
 
 ## 换成自己的博客
 
-**编辑 `site.profile.json` 即可，不必修改 Vue 组件。** 公开模板里的该文件保持 `{}`，私有博客在这里提交自己的配置。未填写的字段继承 `site.config.ts` 的模板默认值。
+**站点信息编辑 `site.profile.json`，首页内容编辑 `content/index.md`，不必修改 Vue 组件。** 公开模板里的 profile 保持 `{}`，私有博客在这里提交自己的配置。未填写的字段继承 `site.config.ts` 的模板默认值。
 
 ```json
 {
@@ -49,8 +50,6 @@ npm run preview
   "author": "作者名",
   "title": "我的博客 · 记录与分享",
   "description": "记录学习和生活。",
-  "role": "记录与分享",
-  "introduction": ["在这里写一段简短介绍。"],
   "avatar": "/avatar.webp",
   "avatarText": "记",
   "url": "https://blog.example.com",
@@ -64,6 +63,31 @@ npm run preview
 作者为全站统一配置，列表与正文共用同一个组件；不需要在每篇文章中填写。修改配置后重新构建并部署。
 
 `site.profile.json` **应提交到自己的私有仓库**，方便 Vercel / Docker 构建读取。它不是密钥文件：其中的名称、简介、作者等会显示在公开网页中。
+
+## 自定义首页
+
+编辑 `content/index.md`，保留开头的 `layout: home`，正文可自由使用 Markdown：
+
+```markdown
+---
+layout: home
+---
+
+<Avatar />
+
+# 你好，我是小记
+
+这里记录我的 **技术笔记** 和日常想法。
+
+- 正在学习 Vue
+- 喜欢阅读与摄影
+
+[浏览博文 →](/blog)
+```
+
+首页标题、介绍、图片和链接均由这份 Markdown 决定，不再使用 profile 的 `role`、`introduction`。`<Avatar />` 是可选的头像组件，读取 profile 的头像配置；可以删除或换成普通 Markdown 图片。首页也支持与文章相同的表格、代码块和 Markdown 扩展。
+
+`site.profile.json` 的 `title`、`description` 提供默认页面元数据；首页可在 frontmatter 中单独填写 `title`、`description` 覆盖。修改 Markdown 后开发页面自动刷新，发布时重新构建即可。更多说明见 [配置文档](docs/CONFIGURATION.md#首页内容)。
 
 ## 创建文章
 
@@ -108,6 +132,12 @@ draft: false
 - 新增、删除、移动文章或切换草稿状态后，重启开发服务器刷新动态路由。
 - 移动已发布文章的日期目录会改变 URL，需要自行配置旧地址重定向。
 - 删除文章时也清理指向它们的相对链接和图片；运行 `npm run check:output` 检查构建结果。
+
+## RSS 订阅
+
+访问 `/rss` 或点击导航栏的 RSS 图标，复制全部博文或单个标签的订阅地址到 RSS 阅读器。
+
+在 `site.profile.json` 设置正式 `url`，或通过 `SITE_URL` 构建环境变量启用。构建会生成 `/feed.xml` 和 `/feeds/tags/<标签 slug>.xml`，包含已发布文章的标题、摘要、作者、日期、标签和原文链接。未配置域名时显示未启用状态，不提供无效的 Feed 链接。完整用法见 [RSS 订阅说明](docs/RSS.md)。
 
 ## Markdown 写作能力
 
@@ -168,6 +198,7 @@ docker run --rm -p 8080:80 thus-live
 site.config.ts           公共模板默认配置与校验
 site.profile.json        站点覆盖配置；公开模板保持 {}
 site.profile.example.json 配置示例
+content/index.md         首页 Markdown 内容
 content/posts/           文章及相邻资源
 content/public/          直接发布的静态资源
 src/components/          页面与交互组件

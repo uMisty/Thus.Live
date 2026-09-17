@@ -71,7 +71,7 @@ test('reduced motion disables effects immediately and preserves navigation and s
   await page.getByRole('link', { name: `${siteConfig.name} 首页` }).click()
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await expect.poll(() => page.evaluate(() => document.getAnimations().length)).toBe(0)
-  await expect(page.getByRole('heading', { name: siteConfig.name, exact: true })).toHaveCSS('opacity', '1')
+  await expect(page.locator('.home-content').getByRole('heading', { name: /Thus\.Live/, level: 1 })).toHaveCSS('opacity', '1')
 })
 
 test('direct article anchors land on readable content without entrance displacement', async ({ page }) => {
