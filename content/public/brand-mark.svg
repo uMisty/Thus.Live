@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Thus.Live</title>
+  <desc id="desc">A geometric T and L share one stem, paired with the dot in Thus.Live.</desc>
+  <path fill="#2f6f61" d="M80 96H400V160H240V352H400V416H176V160H80Z"/>
+  <circle cx="368" cy="256" r="32" fill="#2f6f61"/>
+</svg>

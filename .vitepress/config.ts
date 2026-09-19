@@ -35,6 +35,8 @@ export default defineConfigWithTheme<BlogThemeConfig>({
   lastUpdated: false,
   srcExclude: allPosts.filter(p => p.draft).map(p => p.file),
   head: [
+    ['link', { rel: 'icon', href: '/favicon.ico', sizes: '16x16 24x24 32x32 48x48 64x64 128x128 256x256' }],
+    ['link', { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' }],
     ['meta', { name: 'theme-color', content: '#FFFFFF', media: '(prefers-color-scheme: light)' }],
     ['meta', { name: 'theme-color', content: '#17191A', media: '(prefers-color-scheme: dark)' }],
     ['meta', { name: 'color-scheme', content: 'light dark' }],

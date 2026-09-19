@@ -7,9 +7,9 @@
   "type": "module",
   "engines": { "node": ">=22.12.0" },
   "scripts": {
-    "dev": "vitepress dev --host 127.0.0.1 --port 5173",
+    "dev": "vitepress dev --host 127.0.0.1 --port 5174",
     "build": "node scripts/validate-content.mjs && vitepress build",
-    "preview": "vitepress preview --host 127.0.0.1 --port 4173",
+    "preview": "vitepress preview --host 127.0.0.1 --port 4174",
     "typecheck": "vue-tsc --noEmit",
     "test": "node --test tests/*.test.mjs",
     "capture:preview": "node scripts/capture-preview.mjs",
