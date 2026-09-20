@@ -2,21 +2,70 @@
 
 A minimal **Vue 3 + VitePress + TypeScript static blog template**. Write Markdown, organize posts in date-based folders, and deploy the generated HTML to Vercel or Nginx. No backend or database is required.
 
-[中文完整说明](README.md) · [Configuration](docs/CONFIGURATION.md) · [Deployment](docs/DEPLOYMENT.md) · [License](LICENSE)
+[中文完整说明](README.md) · [Configuration](docs/CONFIGURATION.md) · [RSS](docs/RSS.md) · [Deployment](docs/DEPLOYMENT.md) · [Private blog](docs/PRIVATE-BLOG.md) · [License](LICENSE)
 
 **Built through human–AI collaboration:** people defined requirements, chose the design, and reviewed the result; AI tools (ChatGPT / Codex) assisted with design, implementation, tests, and documentation. This provenance note adds no attribution or licensing requirements.
 
 Thus.Live is a brand name, with `thus-live` as the package name. It does not imply ownership of a domain. Included posts are limited to a [Markdown guide](content/posts/2026/09/16/markdown-guide.md) and a [blog writing and publishing guide](content/posts/2026/09/17/blog-writing-guide.md), both in Chinese. Keep them as references or replace them with your own content.
 
+## At a glance
+
+![Thus.Live workflow: write Markdown and configure the site, build static HTML with Vue, VitePress and TypeScript, then deploy to Vercel or Nginx](docs/images/workflow.svg)
+
+Write in Markdown; the build organizes posts, tags, and archives into a static blog with no backend.
+
+## Screenshots
+
+Captured from the running project with the included content. The interface is in Chinese. Click an image to view it at full size.
+
+### Home
+
+![Desktop home with a Markdown introduction, avatar, and link to posts](docs/images/home-desktop.png)
+
+### Posts and archive
+
+| Post list | Timeline archive |
+| --- | --- |
+| ![Light post list with titles, summaries, tags, authors, and reading time](docs/images/blog-desktop.png) | ![Article timeline grouped by year, month, and day](docs/images/archive-light.png) |
+
+### Dark reading theme
+
+![Dark article page with Markdown content, syntax highlighting, and a sticky table of contents](docs/images/article-dark.png)
+
+### Mobile reading and search
+
+| Responsive article | Local full-text search |
+| --- | --- |
+| <img src="docs/images/article-mobile.png" alt="Mobile article with two-row navigation and collapsible contents" width="300" /> | <img src="docs/images/search-mobile.png" alt="Mobile search dialog showing matches for Vue" width="300" /> |
+
 ## Features
 
-- Markdown-customizable home page, post lists, multiple tags, date archives, and full-text search.
+- Markdown-customizable home page and newest-first post lists with a Load more button.
+- Multiple tags per post, a tag menu and index, single-tag filtering, and year / month / day archives.
+- Local full-text search across titles, summaries, content, and tags; the index loads when search first opens.
 - Consistent date, author, and reading time in lists and articles.
 - Responsive light / dark themes, subtle motion, and reduced-motion support.
 - Shiki syntax highlighting, line numbers, copy buttons, diffs, focus, and code groups.
 - Tables, task lists, footnotes, definitions, math, Mermaid, Emoji, and Vue components.
 - Prerendered HTML, draft exclusion, and optional canonical URLs, RSS, and sitemap.
 - RSS subscription page with copyable addresses, per-tag feeds, and a header link.
+- Article heading navigation, active-section highlighting, update dates, and adjacent-post links.
+- SVG / ICO favicons and SVG interface icons that follow the current theme.
+
+## Pages and design
+
+The reading-focused layout uses white or neutral dark backgrounds, teal links, generous spacing, and thin dividers. Post lists emphasize titles and summaries; archives use a continuous timeline with dots aligned to dates. Desktop articles have a sticky table of contents for second- and third-level headings.
+
+| Page | Route | Content |
+| --- | --- | --- |
+| Home | `/` | Markdown content, optional avatar, and custom links |
+| Posts | `/blog` | Newest-first entries, loaded in `pageSize` batches |
+| Tags | `/tags`, `/tags/<slug>` | Post counts and a list for each topic |
+| Archive | `/archive`, `/archive/YYYY[/MM[/DD]]` | All posts or a date-based subset |
+| Article | `/posts/YYYY/MM/DD/<slug>` | Metadata, summary, body, contents, and adjacent posts |
+| RSS | `/rss` | Copyable site-wide and per-tag feed addresses |
+
+At widths of 860px or less, articles use a single column with collapsible contents before the body. At 560px or less, navigation spans two rows and the timeline adapts to mobile. Tags wrap; code, tables, and math scroll within their own regions. See the [responsive design notes](design/responsive.md).
 
 ## Quick start
 
@@ -27,14 +76,14 @@ npm ci
 npm run dev
 ```
 
-Open `http://127.0.0.1:5173`. For a production preview:
+The default development address is `http://127.0.0.1:5174`; check the terminal output if that port is occupied. For a production preview:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-The output is `dist/`; preview runs at `http://127.0.0.1:4173`. Restart preview after rebuilding to refresh its asset list.
+The output is `dist/`; the default preview address is `http://127.0.0.1:4174`. Restart preview after rebuilding to refresh its asset list.
 
 ## Personalize
 
@@ -57,6 +106,8 @@ Edit `site.profile.json` for site settings and `content/index.md` for home page 
 See [site.profile.example.json](site.profile.example.json) and the [configuration reference](docs/CONFIGURATION.md). `author` is shared across all posts; it is not read from individual frontmatter. Put an optional avatar at `content/public/avatar.webp` and set `avatar` to `/avatar.webp`. Empty or failed images show a text placeholder.
 
 The UI is currently Chinese. `language` sets document/feed metadata; it does not translate the interface. Site settings become public website content and must not contain secrets.
+
+Configuration validation rejects unknown fields and invalid types; `pageSize` must be a positive integer. To change the browser tab icon, replace both `content/public/favicon.svg` and `content/public/favicon.ico`. An additional brand graphic is available at `content/public/brand-mark.svg`. Home page avatars are configured separately with `avatar` / `avatarText`.
 
 ## Customize the home page
 
@@ -95,6 +146,15 @@ Explore the [Markdown example](content/posts/2026/09/16/markdown-guide.md). Nati
 
 Open `/rss` from the header to copy a feed address into your RSS reader. Configure the production origin using profile `url` or build-time `SITE_URL` to enable `/feed.xml` and `/feeds/tags/<tag-slug>.xml`. Feeds include published post summaries, authors, dates, categories, and original links; drafts are excluded. Without an origin, the page shows an unavailable state. See the [RSS guide](docs/RSS.md).
 
+Tag pages also provide a subscription link, and page metadata supports feed discovery. With an origin configured, the development server serves the feed endpoints for local inspection.
+
+## Interaction and accessibility
+
+- Open search from the header, `/`, or `Ctrl/⌘ K`; use arrow keys to select, Enter to open, and Escape to close. An empty query shows six recent posts. Space-separated terms must all match; results are limited to 30 displayed entries.
+- The initial theme follows the system. Click the theme button to save a preference; double-click to follow the system again.
+- A skip-to-content link, visible focus indicators, and native dialog focus management support keyboard navigation.
+- Subtle page, content, and theme transitions respect reduced-motion preferences. Prerendered articles remain readable without JavaScript; archives provide access to all posts.
+
 ## Deploy
 
 - **Vercel:** import your repository, select Other and Node.js 24. `vercel.json` sets `npm ci`, `npm run build`, and output directory `dist`.
@@ -115,7 +175,17 @@ npm run test:e2e
 
 Browser tests use installed Chrome by default. Alternatively install Playwright Chromium and set `PLAYWRIGHT_BROWSER=chromium`. End-to-end tests use the two included writing guides; adjust their fixtures after replacing them. Build and output checks remain useful for your own posts.
 
-Theme tokens live in `src/styles/theme.css`; article styles in `markdown.css`; animations in `motion.css`. Build output, reports, screenshots, archives, and local environment files are Git-ignored. The package's `private: true` prevents npm publication and has no effect on GitHub visibility.
+Theme tokens live in `src/styles/theme.css`; article styles in `markdown.css`; animations in `motion.css`. Build output, reports, local screenshots in `design/implementation/`, archives, and local environment files are Git-ignored. README images in `docs/images/` are committed to Git. The package's `private: true` prevents npm publication and has no effect on GitHub visibility.
+
+The screenshot script defaults to port `4173`, which differs from the default preview port. Set `PREVIEW_URL` to use a different preview address. After building, start a dedicated preview in one terminal:
+
+```bash
+npm run preview -- --port 4173
+```
+
+Keep it running and execute `npm run capture:preview` in another terminal. Desktop, mobile, light, dark, and search screenshots are saved to `design/implementation/`. End-to-end tests start their own preview server on port `4180`.
+
+With that preview running, use `npm run capture:preview -- --readme` to refresh the six README screenshots in `docs/images/`. The project diagram, `workflow.svg`, is maintained separately. Capture uses Chrome by default; set `PLAYWRIGHT_BROWSER=msedge` for Edge or `PLAYWRIGHT_BROWSER=chromium` for an installed Playwright Chromium.
 
 ## License
 

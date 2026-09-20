@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">Thus.Live — Write, build, publish</title>
+  <desc id="desc">Markdown posts and site configuration are built by Vue, VitePress and TypeScript into static HTML, ready for Vercel or Nginx. No backend or database is required.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="m1 1 4 3-4 3" fill="none" stroke="#2f6f61" stroke-width="1.5"/></marker>
+  </defs>
+  <rect width="1200" height="360" rx="20" fill="#f5f8f6"/>
+  <g font-family="Segoe UI, Arial, sans-serif">
+    <text x="48" y="60" fill="#2f6f61" font-size="18" font-weight="600" letter-spacing="2">THUS.LIVE / FROM WORDS TO WEB</text>
+    <text x="48" y="105" fill="#202825" font-size="30" font-weight="600">Your words. A simple, static home.</text>
+    <g fill="#ffffff" stroke="#d4dfd9"><rect x="48" y="144" width="320" height="138" rx="12"/><rect x="440" y="144" width="320" height="138" rx="12"/><rect x="832" y="144" width="320" height="138" rx="12"/></g>
+    <g fill="#2f6f61" font-size="16" font-weight="600"><text x="72" y="175">01 / WRITE</text><text x="464" y="175">02 / BUILD</text><text x="856" y="175">03 / PUBLISH</text></g>
+    <g fill="#202825" font-size="24" font-weight="600"><text x="72" y="213">Markdown + config</text><text x="464" y="213">Vue + VitePress + TS</text><text x="856" y="213">Vercel / Nginx</text></g>
+    <g fill="#56645d" font-size="17"><text x="72" y="251">Posts, tags, dates, your identity</text><text x="464" y="251">Static HTML + local search</text><text x="856" y="251">Deploy the generated dist/</text></g>
+    <g stroke="#2f6f61" stroke-width="2" marker-end="url(#arrow)"><path d="M384 213h40"/><path d="M776 213h40"/></g>
+    <text x="48" y="326" fill="#56645d" font-size="17">Reading first · Light &amp; dark themes · Responsive layout · No backend or database</text>
+  </g>
+</svg>
