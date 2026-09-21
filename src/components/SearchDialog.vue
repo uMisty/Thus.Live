@@ -3,6 +3,7 @@ import { computed, nextTick, ref, watch } from 'vue'
 import { withBase } from 'vitepress'
 import { siteConfig } from '../../site.config'
 import type { SearchPost } from '../types'
+import { formatDate } from '../format-date'
 import Icon from './Icon.vue'
 const props = defineProps<{ open: boolean }>()
 const emit = defineEmits<{ close: [] }>()
@@ -66,7 +67,7 @@ function move(event: KeyboardEvent) {
           <button class="text-button" @click="query = ''; input?.focus()">清除搜索</button>
         </div>
         <a v-for="post in matches.slice(0, 30)" :key="post.url" class="search-result" :href="withBase(post.url)" @click="emit('close')">
-          <time :datetime="post.date">{{ post.date.replaceAll('-', '.') }}</time><span class="search-meta"> · {{ siteConfig.author }} · 约 {{ post.readingMinutes }} 分钟</span>
+          <time :datetime="post.date">{{ formatDate(post.date) }}</time><span class="search-meta"> · {{ siteConfig.author }} · 约 {{ post.readingMinutes }} 分钟</span>
           <h3>{{ post.title }}</h3><p>{{ post.description }}</p>
           <span class="search-tags"><span v-for="tag in post.tags" :key="tag">#{{ tag }}</span></span>
         </a>

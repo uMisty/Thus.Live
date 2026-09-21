@@ -5,6 +5,7 @@ import { data } from '../posts.data'
 import type { Post } from '../types'
 import PostMeta from './PostMeta.vue'
 import TagLinks from './TagLinks.vue'
+import { siteConfig } from '../../site.config'
 const { frontmatter, page } = useData()
 const post = computed(() => frontmatter.value.post as Post)
 const body = ref<HTMLElement>()
@@ -73,6 +74,10 @@ onBeforeUnmount(() => { observer?.disconnect(); clearTimeout(cleanupTimer) })
       <div ref="body" class="markdown-body" @click="copy" @change="codeGroup"><Content /></div>
       <p class="sr-only" role="status">{{ announcement }}</p>
       <footer class="article-footer">
+        <div class="article-copyright" aria-label="版权声明">
+          <p>© {{ siteConfig.author }} · 版权声明</p>
+          <p>除另有注明外，本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans" rel="license">CC BY-NC-SA 4.0 国际许可协议</a>（署名—非商业性使用—相同方式共享）授权。转载或改编时，请注明作者与原文链接、提供协议链接并标明修改；不得用于商业目的，改编作品须以相同协议共享。</p>
+        </div>
         <a class="back-link" :href="withBase('/blog')">← 返回博文列表</a>
         <nav v-if="newer || older" class="adjacent-posts" aria-label="相邻文章">
           <a v-if="newer" :href="withBase(newer.url)"><span>较新的记录</span>{{ newer.title }}</a>

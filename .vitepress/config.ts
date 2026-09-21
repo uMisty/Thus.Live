@@ -12,6 +12,7 @@ import { readPosts, parsePost, publicPost, archiveDates, collectTags } from '../
 import { escapeXml, feedPath, renderRss } from '../scripts/rss.mjs'
 import { siteConfig } from '../site.config'
 import type { BlogThemeConfig } from '../src/types'
+import { formatDate } from '../src/format-date'
 
 const allPosts = readPosts(undefined, true)
 const published = allPosts.filter(p => !p.draft)
@@ -114,7 +115,7 @@ export default defineConfigWithTheme<BlogThemeConfig>({
         page.frontmatter.head.push(['link', { rel: 'alternate', type: 'application/rss+xml', title: `${siteConfig.name} · ${page.title} RSS`, href: siteUrl + feedPath(page.params.tag) }])
       }
     }
-    if (page.frontmatter.layout === 'archive' && page.params?.date) page.title = `${page.params.date} · 时间轴`
+    if (page.frontmatter.layout === 'archive' && page.params?.date) page.title = `${formatDate(String(page.params.date))} · 时间轴`
     if (siteUrl && !page.isNotFound) {
       const relative = page.relativePath.replace(/\.md$/, '').replace(/(^|\/)index$/, '$1')
       const url = new URL('/' + relative.split('/').map(encodeURIComponent).join('/'), siteUrl).href
