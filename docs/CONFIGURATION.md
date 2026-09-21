@@ -32,6 +32,16 @@
 
 网站版权信息显示在页脚左侧，通过 `site.profile.json` 的 `copyright` 单独编辑，不跟随 `name` 变化。例如 `"copyright": "© 我的博客 · [GitHub](https://github.com/uMisty)"`。支持普通文字和多个 Markdown 链接，站内链接可写为 `[首页](/)`；原始 HTML 不会执行。右侧仍使用 `footer`。修改配置后重新构建并部署。
 
+默认链接在当前标签页打开。在链接后紧接 `{target="_blank"}` 可在新标签页打开，并自动添加 `rel="noopener noreferrer"`。此扩展用于 `copyright` 字段。例如在 JSON 中填写（双引号需要转义）：
+
+```json
+{
+  "copyright": "© 我的博客 · [GitHub](https://github.com/uMisty){target=\"_blank\"}"
+}
+```
+
+也支持单引号形式 `{target='_blank'}`。未指定的链接保持当前标签页打开，不支持其他 HTML 属性。
+
 ## 首页内容
 
 编辑 `content/index.md`，保留 `layout: home`，正文直接使用 Markdown：
