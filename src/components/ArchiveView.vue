@@ -25,7 +25,7 @@ const groups = computed(() => {
       <section v-for="month in year.months" :key="month.month" class="archive-month">
         <h3 data-reveal><a :href="withBase(`/archive/${year.year}/${month.month}`)">{{ month.month }} 月</a></h3>
         <div class="archive-entries">
-          <article v-for="(post, index) in month.posts" :key="post.url" class="archive-entry">
+          <article v-for="(post, index) in month.posts" :key="post.url" class="archive-entry" :class="{ 'archive-entry-continuation': index > 0 && post.date === month.posts[index - 1].date }">
             <a v-if="index === 0 || post.date !== month.posts[index - 1].date" class="archive-date" :href="withBase(`/archive/${post.date.replaceAll('-', '/')}`)"><time :datetime="post.date">{{ formatDate(post.date) }}</time></a>
             <div class="archive-entry-content" data-reveal><h4><a :href="withBase(post.url)">{{ post.title }}</a></h4><TagLinks :tags="post.tags" /></div>
           </article>

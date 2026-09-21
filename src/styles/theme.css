@@ -135,6 +135,7 @@ h1, h2, h3, h4 { font-weight: 500; letter-spacing: -.025em; }
 .archive-month:last-child .archive-entry:last-child::before { content: none; }
 .archive-entry::after { content: ''; position: absolute; left: calc(var(--timeline-axis-offset) - 3px); top: calc(var(--timeline-node-y) - 3.5px); width: 7px; height: 7px; border-radius: 50%; background: var(--timeline-dot); box-shadow: 0 0 0 4px var(--bg); pointer-events: none; }
 .archive-entry:hover::after, .archive-entry:focus-within::after { background: var(--accent); }
+.archive-entry-continuation::after { content: none; }
 .archive-date { margin-top: var(--timeline-date-offset); line-height: var(--timeline-date-height); white-space: nowrap; color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; }
 .archive-entry-content { grid-column: 2; }
 .archive-entry h4 { font-size: 22px; line-height: 34px; margin-bottom: 8px; }
