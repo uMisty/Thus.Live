@@ -1,6 +1,28 @@
 {
   "name": "thus-live",
-  "description": "A minimal Vue and Markdown static blog template.",
+  "description": "一个以阅读和写作为中心的 Vue 3 + VitePress + TypeScript 静态博客模板。用 Markdown 写文章，按日期目录归档，生成可部署到 Vercel 或 Nginx 的纯静态网站，无需后端或数据库。",
+  "author": {
+    "name": "uMisty",
+    "url": "http://umisty.com"
+  },
+  "homepage": "https://github.com/uMisty/Thus.Live#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uMisty/Thus.Live.git"
+  },
+  "bugs": {
+    "url": "https://github.com/uMisty/Thus.Live/issues"
+  },
+  "keywords": [
+    "thus-live",
+    "blog",
+    "static-site",
+    "template",
+    "vue3",
+    "vitepress",
+    "typescript",
+    "markdown"
+  ],
   "license": "0BSD",
   "version": "1.0.0",
   "private": true,
