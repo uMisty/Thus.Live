@@ -8,6 +8,11 @@
 
 Thus.Live 是品牌写法，不是一句完整英文；代码包名为 `thus-live`。名称中的 `.Live` 不代表已注册域名，项目不预设真实域名或个人身份。
 
+## 本地编辑器 Live Editor
+
+新增了本地编辑器工具 [Live Editor](https://github.com/uMisty/LiveEditor)  
+现在可以通过该工具管理博客和文章了
+
 ## 项目一览
 
 ![Thus.Live 写作与发布流程：Markdown 文章和站点配置经 Vue、VitePress 与 TypeScript 构建，生成静态站点后部署到 Vercel 或 Nginx](docs/images/workflow.svg)

@@ -1,7 +1,11 @@
 ---
 title: Markdown 写作与代码展示
 description: 从表格与脚注，到代码分组、数学公式和 Mermaid：一份可以直接复用的写作示例。
-tags: [Markdown, 写作]
+tags:
+  - Markdown
+  - 写作
+draft: false
+updated: 2026-09-30
 ---
 
 这份指南演示正文排版、代码和图表的写法，可以直接参考本文的 Markdown 源文件。首次写文章时，先阅读[博客编写与发布指南](../17/blog-writing-guide)，了解目录、标签和发布步骤。
