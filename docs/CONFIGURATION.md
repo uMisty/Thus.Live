@@ -32,15 +32,15 @@
 
 网站版权信息显示在页脚左侧，通过 `site.profile.json` 的 `copyright` 单独编辑，不跟随 `name` 变化。例如 `"copyright": "© 我的博客 · [GitHub](https://github.com/uMisty)"`。支持普通文字和多个 Markdown 链接，站内链接可写为 `[首页](/)`；原始 HTML 不会执行。右侧仍使用 `footer`。修改配置后重新构建并部署。
 
-默认链接在当前标签页打开。在链接后紧接 `{target="_blank"}` 可在新标签页打开，并自动添加 `rel="noopener noreferrer"`。此扩展用于 `copyright` 字段。例如在 JSON 中填写（双引号需要转义）：
+链接采用与正文一致的判断规则：带协议的地址（如 `https://`）或以 `//` 开头的地址在新标签页打开，自动添加 `rel="noopener noreferrer"`；站内路径、相对路径和 `#锚点` 在当前标签页跳转。例如：
 
 ```json
 {
-  "copyright": "© 我的博客 · [GitHub](https://github.com/uMisty){target=\"_blank\"}"
+  "copyright": "© 我的博客 · [首页](/) · [GitHub](https://github.com/uMisty)"
 }
 ```
 
-也支持单引号形式 `{target='_blank'}`。未指定的链接保持当前标签页打开，不支持其他 HTML 属性。
+无需添加 `{}` 属性后缀；旧配置中的 `{target='_blank'}` 或 `{target="_blank"}` 应删除，否则会作为普通文字显示。使用站内路径（如 `/about`）表示内部链接，完整 URL 按外部链接处理。
 
 ## 首页内容
 
