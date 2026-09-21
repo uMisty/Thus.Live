@@ -12,7 +12,7 @@
 
 | 字段 | 类型 | 默认值 / 用途 |
 | --- | --- | --- |
-| `name` | string | `Thus.Live`；导航、页脚名称和 RSS 名称，首页正文标题由 Markdown 决定 |
+| `name` | string | `Thus.Live`；导航和 RSS 名称，首页正文标题由 Markdown 决定 |
 | `author` | string | `Thus.Live`；列表、正文、搜索结果和 RSS 的统一作者 |
 | `title` | string | `Thus.Live · 记录与分享`；默认首页浏览器标题，可由首页 frontmatter 覆盖 |
 | `description` | string | `记录当下，持续思考。`；默认 SEO 与 RSS 描述，首页正文由 Markdown 决定 |
@@ -20,12 +20,17 @@
 | `url` | string | 空；正式站点根地址，例如 `https://blog.example.com` |
 | `avatar` | string | 空；本地资源路径或图片 URL |
 | `avatarText` | string | 空；头像占位文字，空时取 `name` 首字符 |
-| `footer` | string | `记录与分享`；页脚短句 |
+| `copyright` | string | `[Thus.Live](/)`；网站版权信息，显示在页脚左侧，支持 `[文字](链接)`，空字符串隐藏内容 |
+| `footer` | string | `记录与分享`；页脚右侧短句 |
 | `pageSize` | 正整数 | `10`；博文列表每页数量 |
 
 配置采用字段覆盖。`name`、`author`、`title`、`language` 不可为空白，拼错字段名或填错类型会中止构建并报错。JSON 不支持注释和末尾逗号。
 
 当前是单作者博客，Markdown frontmatter 中的 `author` 不参与展示。修改 `author` 会同步更新所有文章列表、正文、搜索结果和 RSS。
+
+## 网站版权信息
+
+网站版权信息显示在页脚左侧，通过 `site.profile.json` 的 `copyright` 单独编辑，不跟随 `name` 变化。例如 `"copyright": "© 我的博客 · [GitHub](https://github.com/uMisty)"`。支持普通文字和多个 Markdown 链接，站内链接可写为 `[首页](/)`；原始 HTML 不会执行。右侧仍使用 `footer`。修改配置后重新构建并部署。
 
 ## 首页内容
 

@@ -1,6 +1,7 @@
 import { defineConfigWithTheme } from 'vitepress'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import MarkdownIt from 'markdown-it'
 import footnote from 'markdown-it-footnote'
 import taskLists from 'markdown-it-task-lists'
 import deflist from 'markdown-it-deflist'
@@ -23,12 +24,14 @@ if (configuredUrl) {
 }
 const siteUrl = configuredUrl ? new URL(configuredUrl).origin : ''
 const feedUrl = siteUrl ? siteUrl + feedPath() : ''
+// Parse copyright links at build time; escape raw HTML and reject unsafe URL schemes.
+const copyrightMarkdown = new MarkdownIt('zero', { html: false }).enable(['link', 'escape', 'entity'])
 
 export default defineConfigWithTheme<BlogThemeConfig>({
   lang: siteConfig.language,
   title: siteConfig.name,
   description: siteConfig.description,
-  themeConfig: { feedUrl },
+  themeConfig: { feedUrl, copyrightHtml: copyrightMarkdown.renderInline(siteConfig.copyright) },
   srcDir: 'content',
   outDir: 'dist',
   cleanUrls: true,

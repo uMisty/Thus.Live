@@ -69,7 +69,7 @@ onBeforeUnmount(() => { document.removeEventListener('keydown', keydown); docume
       <Content v-else class="markdown-body" />
     </main>
 
-    <footer class="site-footer"><a :href="withBase('/')">{{ siteConfig.name }}</a><span>{{ siteConfig.footer }}</span></footer>
+    <footer class="site-footer"><span class="site-copyright" v-html="theme.copyrightHtml"></span><span>{{ siteConfig.footer }}</span></footer>
   </div>
   <SearchDialog :open="searchOpen" @close="searchOpen = false" />
 </template>

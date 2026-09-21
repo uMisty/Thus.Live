@@ -14,4 +14,4 @@ export interface Post {
 export interface Tag { name: string; slug: string; count: number }
 export interface BlogData { posts: Post[]; tags: Tag[] }
 export interface SearchPost extends Post { searchText: string }
-export interface BlogThemeConfig { feedUrl: string }
+export interface BlogThemeConfig { feedUrl: string; copyrightHtml: string }

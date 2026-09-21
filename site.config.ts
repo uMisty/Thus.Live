@@ -10,6 +10,7 @@ export interface SiteConfig {
   url: string
   avatar: string
   avatarText: string
+  copyright: string
   footer: string
   pageSize: number
 }
@@ -23,6 +24,7 @@ const defaults: SiteConfig = {
   url: '',
   avatar: '',
   avatarText: '',
+  copyright: '[Thus.Live](/)',
   footer: '记录与分享',
   pageSize: 10,
 }
