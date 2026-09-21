@@ -5,6 +5,7 @@ export interface Post {
   description: string
   date: string
   updated?: string
+  order?: number
   year: string
   month: string
   day: string

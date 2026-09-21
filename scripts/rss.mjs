@@ -1,3 +1,5 @@
+import { comparePosts } from './post-order.mjs'
+
 /** XML 1.0 text, including safe handling of control characters in frontmatter. */
 export function escapeXml(value) {
   return String(value)
@@ -19,7 +21,7 @@ export function feedPath(slug) {
  */
 export function renderRss(posts, site, siteUrl, tag) {
   const published = posts.filter(post => !post.draft && (!tag || post.tags.includes(tag.name)))
-    .sort((a, b) => b.date.localeCompare(a.date) || a.url.localeCompare(b.url))
+    .sort(comparePosts)
   const absolute = relative => new URL(relative, siteUrl).href
   const title = tag ? `${site.name} · #${tag.name}` : site.name
   const description = tag ? `${site.name} 中关于「${tag.name}」的博文。` : site.description

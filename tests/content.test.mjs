@@ -21,6 +21,17 @@ test('rejects impossible dates, non-date folders and conflicting metadata', () =
   assert.throws(() => parsePost('posts/2026/09/16/test.md', article.replace('title:', 'date: 2026-09-15\ntitle:')), /date 必须/)
   assert.throws(() => parsePost('posts/2026/09/16/test.md', article.replace('tags: [Vue, .NET, Vue]', 'tags: Vue')), /tags 必须/)
 })
+
+test('optional post order defaults to zero and accepts only safe integers', () => {
+  const file = 'posts/2026/09/16/test.md'
+  assert.equal(parsePost(file, article).order, 0)
+  for (const order of [-2, 0, 1, 10]) {
+    assert.equal(parsePost(file, article.replace('title:', `order: ${order}\ntitle:`)).order, order)
+  }
+  for (const order of ['1.5', '"1"', 'null', 'true', '.inf', '.nan', '9007199254740992']) {
+    assert.throws(() => parsePost(file, article.replace('title:', `order: ${order}\ntitle:`)), /order 必须/)
+  }
+})
 test('drafts never enter public metadata, tags or archive dates; collisions fail fast', t => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'thus-live-content-'))
   t.after(() => fs.rmSync(root, { recursive: true, force: true }))
@@ -38,6 +49,24 @@ test('drafts never enter public metadata, tags or archive dates; collisions fail
   fs.writeFileSync(path.join(dir, 'public/index.md'), article)
   assert.throws(() => readPosts(root), /重复的文章路由/)
 })
+test('shared post data sorts by descending date and order, then URL', t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'thus-live-order-'))
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }))
+  for (const [date, slug, order] of [
+    ['2026/09/17', 'a-last', -1],
+    ['2026/09/17', 'z-first', 2],
+    ['2026/09/17', 'b-default', undefined],
+    ['2026/09/17', 'a-zero', 0],
+    ['2026/09/18', 'newest', -100],
+    ['2026/09/16', 'oldest', 100],
+  ]) {
+    const dir = path.join(root, 'posts', date)
+    fs.mkdirSync(dir, { recursive: true })
+    fs.writeFileSync(path.join(dir, `${slug}.md`), order === undefined ? article : article.replace('title:', `order: ${order}\ntitle:`))
+  }
+  assert.deepEqual(readPosts(root).map(post => post.url.split('/').at(-1)), ['newest', 'z-first', 'a-zero', 'b-default', 'a-last', 'oldest'])
+})
+
 test('search text keeps code and strips Markdown punctuation', () => {
   const text = markdownText('## Heading\n\nA **bold** [link](https://example.test).\n\n```ts\nconst uniqueToken = 42\n```')
   assert.match(text, /bold link/)

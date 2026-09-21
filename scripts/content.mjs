@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import matter from 'gray-matter'
 import MarkdownIt from 'markdown-it'
+import { comparePosts } from './post-order.mjs'
 
 const plainParser = new MarkdownIt({ html: false })
 export const contentRoot = path.resolve('content')
@@ -38,6 +39,7 @@ export function parsePost(relativeFile, raw) {
   if (typeof title !== 'string' || !title.trim()) throw new Error(`${normalized}: 需要 title 或一级标题`)
   if (data.tags !== undefined && (!Array.isArray(data.tags) || data.tags.some(t => typeof t !== 'string' || !t.trim()))) throw new Error(`${normalized}: tags 必须是非空字符串数组`)
   if (data.draft !== undefined && typeof data.draft !== 'boolean') throw new Error(`${normalized}: draft 必须为布尔值`)
+  if (data.order !== undefined && !Number.isSafeInteger(data.order)) throw new Error(`${normalized}: order 必须为安全整数`)
   const tags = [...new Set((data.tags ?? []).map(t => t.trim()))]
   if (tags.some(t => !tagSlug(t))) throw new Error(`${normalized}: 标签需要包含文字或数字`)
   const searchText = markdownText(content)
@@ -51,7 +53,7 @@ export function parsePost(relativeFile, raw) {
     file: normalized, url, title: title.trim(), date, year, month, day,
     description: typeof data.description === 'string' ? data.description : searchText.slice(0, 120),
     tags, readingMinutes: Math.max(1, Math.ceil(cjk / 350 + words / 220)),
-    updated, draft: data.draft === true, content, searchText,
+    updated, order: data.order ?? 0, draft: data.draft === true, content, searchText,
   }
 }
 
@@ -80,7 +82,7 @@ export function readPosts(root = contentRoot, includeDrafts = false) {
       slugs.set(slug, tag)
     }
   }
-  return posts.filter(p => includeDrafts || !p.draft).sort((a,b) => b.date.localeCompare(a.date) || a.url.localeCompare(b.url))
+  return posts.filter(p => includeDrafts || !p.draft).sort(comparePosts)
 }
 
 export function publicPost({ content, searchText, draft, ...post }) { return post }

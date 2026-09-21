@@ -4,6 +4,7 @@ import { withBase } from 'vitepress'
 import { siteConfig } from '../../site.config'
 import type { SearchPost } from '../types'
 import { formatDate } from '../format-date'
+import { comparePosts } from '../../scripts/post-order.mjs'
 import Icon from './Icon.vue'
 const props = defineProps<{ open: boolean }>()
 const emit = defineEmits<{ close: [] }>()
@@ -35,7 +36,7 @@ const matches = computed(() => {
     const tags = post.tags.join(' ').toLocaleLowerCase()
     const haystack = `${title} ${tags} ${post.description} ${post.searchText}`.toLocaleLowerCase()
     return { post, score: terms.every(term => haystack.includes(term)) ? terms.reduce((score, term) => score + (title.includes(term) ? 10 : 0) + (tags.includes(term) ? 5 : 0) + 1, 0) : 0 }
-  }).filter(hit => hit.score > 0).sort((a,b) => b.score - a.score || b.post.date.localeCompare(a.post.date)).map(hit => hit.post)
+  }).filter(hit => hit.score > 0).sort((a,b) => b.score - a.score || comparePosts(a.post, b.post)).map(hit => hit.post)
 })
 function move(event: KeyboardEvent) {
   if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); emit('close'); return }

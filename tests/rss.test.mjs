@@ -20,6 +20,21 @@ test('RSS excludes drafts, sorts newest first and does not mutate post order', (
   assert.equal((renderRss(Array.from({ length: 25 }, (_, i) => post(`post-${i}`)), site, origin).match(/<item>/g) || []).length, 25)
 })
 
+test('main and tag RSS honor descending same-day order with stable URL ties', () => {
+  const posts = [
+    post('a-last', { order: -1 }), post('z-first', { order: 2 }),
+    post('b-default'), post('a-zero', { order: 0 }),
+    { ...post('newest', { order: -100 }), date: '2026-09-18' },
+    { ...post('oldest', { order: 100 }), date: '2026-09-16' },
+  ]
+  const before = [...posts]
+  for (const tag of [undefined, { name: '写作', slug: '写作' }]) {
+    const xml = renderRss(posts, site, origin, tag)
+    assert.deepEqual([...xml.matchAll(/<item>\s*<title>(.*?)<\/title>/g)].map(match => match[1]), ['newest', 'z-first', 'a-zero', 'b-default', 'a-last', 'oldest'])
+  }
+  assert.deepEqual(posts, before)
+})
+
 test('RSS keeps stable absolute permalinks, author, self URL and publication dates after updates', () => {
   const original = post('中文文章')
   const updated = { ...original, updated: '2026-09-19' }
