@@ -5,6 +5,7 @@ import { data } from '../posts.data'
 import { siteConfig } from '../../site.config'
 import { vReveal } from '../directives/reveal'
 import Icon from './Icon.vue'
+import ThemeSelect from './ThemeSelect.vue'
 import PostList from './PostList.vue'
 import ArchiveView from './ArchiveView.vue'
 import ArticleView from './ArticleView.vue'
@@ -12,7 +13,7 @@ import SearchDialog from './SearchDialog.vue'
 import RssView from './RssView.vue'
 import { feedPath } from '../../scripts/rss.mjs'
 import type { BlogThemeConfig } from '../types'
-const { frontmatter, page, isDark, theme } = useData<BlogThemeConfig>()
+const { frontmatter, page, theme } = useData<BlogThemeConfig>()
 const searchOpen = ref(false)
 const tagMenu = ref<HTMLDetailsElement>()
 const main = ref<HTMLElement>()
@@ -34,11 +35,6 @@ watch(() => page.value.relativePath, async () => {
 })
 onMounted(() => { document.addEventListener('keydown', keydown); document.addEventListener('click', outside) })
 onBeforeUnmount(() => { document.removeEventListener('keydown', keydown); document.removeEventListener('click', outside) })
-function resetAppearance() {
-  localStorage.removeItem('vitepress-theme-appearance')
-  isDark.value = matchMedia('(prefers-color-scheme: dark)').matches
-  localStorage.setItem('vitepress-theme-appearance', 'auto')
-}
 </script>
 
 <template>
@@ -57,7 +53,7 @@ function resetAppearance() {
       <div class="header-actions">
         <a class="icon-button" :href="withBase('/rss')" aria-label="RSS 订阅" title="RSS 订阅" :aria-current="layout === 'rss' ? 'page' : undefined"><Icon name="rss" /></a>
         <button class="icon-button" aria-label="搜索博文" aria-haspopup="dialog" title="搜索（Ctrl / ⌘ K）" @click="searchOpen = true"><Icon name="search" /></button>
-        <button class="icon-button theme-toggle" aria-label="切换明暗主题" title="切换明暗主题；双击跟随系统" @click="isDark = !isDark" @dblclick="resetAppearance"><Icon class="moon-icon" name="moon" /><Icon class="sun-icon" name="sun" /></button>
+        <ThemeSelect />
       </div>
     </header>
 
